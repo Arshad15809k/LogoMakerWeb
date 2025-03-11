@@ -388,32 +388,40 @@
       logoText.style.fontFamily = getRandomFont();
       applyEffects(3);
     });
-    
-    // "Download Logo" button: capture the preview with square corners
-    downloadBtn.addEventListener('click', () => {
-      const preview = document.getElementById("preview");
-      // Temporarily remove border-radius for a square capture
-      const originalRadius = preview.style.borderRadius;
-      preview.style.borderRadius = "0";
-      
-      // Ensure cross-origin image is set
-      previewImage.setAttribute("crossorigin", "anonymous");
-      previewImage.onload = () => {
-        html2canvas(preview, {
-          useCORS: true,
-          allowTaint: true,
-        }).then(canvas => {
-          const link = document.createElement("a");
-          link.download = "AI-Logo.png";
-          link.href = canvas.toDataURL();
-          link.click();
-          // Restore original border-radius
-          preview.style.borderRadius = originalRadius;
-        });
-      };
-      // Reload the image to apply crossorigin settings
-      previewImage.src = previewImage.src;
+
+downloadBtn.addEventListener('click', async () => {
+  const preview = document.querySelector("#preview");
+
+  // Remove border-radius for square corners
+  preview.style.borderRadius = "0";
+
+  // Clone the preview element to capture the updated DOM
+  const clonePreview = preview.cloneNode(true);
+  document.body.appendChild(clonePreview);
+
+  // Ensure images reload for CORS handling
+  const img = clonePreview.querySelector("img");
+  img.setAttribute("crossorigin", "anonymous");
+  img.src = previewImage.src; 
+
+  // Wait for image to load before capturing
+  img.onload = () => {
+    html2canvas(clonePreview, {
+      useCORS: true,
+      allowTaint: true,
+    }).then((canvas) => {
+      const link = document.createElement("a");
+      link.download = "AI-Logo.png";
+      link.href = canvas.toDataURL();
+      link.click();
+
+      // Clean up cloned element and restore border-radius
+      document.body.removeChild(clonePreview);
+      preview.style.borderRadius = "15px";
     });
+  };
+});
+    
     
   </script>
   
