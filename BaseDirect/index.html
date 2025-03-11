@@ -390,37 +390,48 @@
     });
 
 downloadBtn.addEventListener('click', async () => {
-  const preview = document.querySelector("#preview");
-
-  // Remove border-radius for square corners
+  const preview = document.getElementById("preview");
+  const originalRadius = preview.style.borderRadius;
+  
+  // Temporarily remove border-radius for a square capture
   preview.style.borderRadius = "0";
-
-  // Clone the preview element to capture the updated DOM
+  
+  // Clone the preview element and move it offscreen
   const clonePreview = preview.cloneNode(true);
+  clonePreview.style.position = "absolute";
+  clonePreview.style.top = "-9999px";
   document.body.appendChild(clonePreview);
-
-  // Ensure images reload for CORS handling
-  const img = clonePreview.querySelector("img");
-  img.setAttribute("crossorigin", "anonymous");
-  img.src = previewImage.src; 
-
-  // Wait for image to load before capturing
-  img.onload = () => {
-    html2canvas(clonePreview, {
-      useCORS: true,
-      allowTaint: true,
-    }).then((canvas) => {
-      const link = document.createElement("a");
-      link.download = "AI-Logo.png";
-      link.href = canvas.toDataURL();
-      link.click();
-
-      // Clean up cloned element and restore border-radius
-      document.body.removeChild(clonePreview);
-      preview.style.borderRadius = "15px";
-    });
-  };
+  
+  // Get the image from the clone and ensure it uses CORS
+  const clonedImg = clonePreview.querySelector("img");
+  clonedImg.setAttribute("crossorigin", "anonymous");
+  
+  // Wait for the cloned image to be fully loaded (if not already)
+  await new Promise((resolve) => {
+    if (clonedImg.complete) {
+      resolve();
+    } else {
+      clonedImg.onload = resolve;
+      clonedImg.onerror = resolve;
+    }
+  });
+  
+  // Use html2canvas on the clone
+  html2canvas(clonePreview, {
+    useCORS: true,
+    allowTaint: true,
+  }).then((canvas) => {
+    const link = document.createElement("a");
+    link.download = "AI-Logo.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+    
+    // Clean up: remove the clone and restore border-radius
+    document.body.removeChild(clonePreview);
+    preview.style.borderRadius = originalRadius;
+  });
 });
+
     
     
   </script>
