@@ -3,15 +3,19 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>AI Logo Maker - Neon Glow</title>
+  <title>Logo Maker - Neon Glow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Fancy Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&family=Monoton&family=Zen+Dots&family=Raleway+Dots&family=Rampart+One&display=swap" rel="stylesheet">
 
   <style>
-    /* Base Styling */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
@@ -24,7 +28,6 @@
       overflow-x: hidden;
     }
 
-    /* Glassmorphic Container */
     .container {
       width: 100%;
       max-width: 850px;
@@ -37,11 +40,15 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
-    /* Header */
     .header {
       text-align: center;
       margin-bottom: 30px;
@@ -55,12 +62,6 @@
       color: transparent;
     }
 
-    .header p {
-      font-size: 1.2rem;
-      opacity: 0.8;
-    }
-
-    /* Form */
     .form-group {
       margin-bottom: 20px;
     }
@@ -82,9 +83,6 @@
       color: white;
     }
 
-    input::placeholder { color: rgba(255, 255, 255, 0.7); }
-
-    /* Logo Preview */
     #preview {
       position: relative;
       width: 100%;
@@ -100,6 +98,9 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
 
     #logoText {
@@ -108,23 +109,25 @@
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
-      pointer-events: none;
-      transition: all 0.5s ease;
-      font-size: clamp(2rem, 8vw, 5rem); /* Responsive */
+      font-size: clamp(2rem, 8vw, 5rem);
       text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.5);
+      pointer-events: none;
     }
 
-    /* Neon Glow */
     .neon {
       animation: neonGlow 1.5s alternate infinite;
     }
 
     @keyframes neonGlow {
-      from { text-shadow: 0 0 20px cyan, 0 0 40px cyan; }
-      to { text-shadow: 0 0 30px magenta, 0 0 50px magenta; }
+      from {
+        text-shadow: 0 0 20px cyan, 0 0 40px cyan;
+      }
+
+      to {
+        text-shadow: 0 0 30px magenta, 0 0 50px magenta;
+      }
     }
 
-    /* Buttons */
     button {
       width: 100%;
       padding: 12px;
@@ -138,9 +141,10 @@
       transition: box-shadow 0.4s;
     }
 
-    button:hover { box-shadow: 0 0 25px #00c6ff; }
+    button:hover {
+      box-shadow: 0 0 25px #00c6ff;
+    }
 
-    /* Footer */
     .footer {
       margin-top: 30px;
       text-align: center;
@@ -149,11 +153,12 @@
     }
 
     @media (max-width: 600px) {
-      .header h1 { font-size: 2rem; }
-      .header p { font-size: 1rem; }
+      .header h1 {
+        font-size: 2rem;
+      }
     }
-
   </style>
+
 </head>
 
 <body>
@@ -194,17 +199,13 @@
     const generateBtn = document.getElementById('generateBtn');
     const downloadBtn = document.getElementById('downloadBtn');
 
-    const prompts = [
-      "futuristic neon", "cyberpunk city", "holographic waves",
-      "luxury dark", "vaporwave", "retro neon sign"
-    ];
-
+    const prompts = ["futuristic neon", "cyberpunk city", "holographic waves", "luxury dark", "retro neon sign"];
     const fonts = ["Orbitron", "Monoton", "Zen Dots", "Rampart One", "Raleway Dots"];
 
     async function fetchBackground() {
       const prompt = prompts[Math.floor(Math.random() * prompts.length)];
-      const res = await fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(prompt)}&client_id=${unsplashAccessKey}`);
-      const data = await res.json();
+      const response = await fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(prompt)}&client_id=${unsplashAccessKey}`);
+      const data = await response.json();
       return data.urls.regular;
     }
 
@@ -218,7 +219,7 @@
     });
 
     downloadBtn.addEventListener('click', () => {
-      html2canvas(document.getElementById('preview')).then(canvas => {
+      html2canvas(document.querySelector("#preview"), { useCORS: true }).then(canvas => {
         const link = document.createElement('a');
         link.download = 'AI-Logo.png';
         link.href = canvas.toDataURL();
