@@ -4,71 +4,103 @@
 <head>
   <meta charset="UTF-8">
   <title>AI Logo Maker with Unsplash</title>
-  <!-- Cool Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Lobster&display=swap" rel="stylesheet">
   <style>
-    * {
+    /* Premium Background Gradient */
+    body {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      color: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 800px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      height: 100vh;
       overflow: hidden;
     }
 
+    /* Glassmorphic Container */
+    .container {
+      width: 100%;
+      max-width: 850px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      overflow: hidden;
+      padding: 40px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    /* Fade-in Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Header */
     .header {
-      background: #4a90e2;
-      color: white;
-      padding: 20px;
       text-align: center;
+      margin-bottom: 30px;
     }
 
-    .content {
-      padding: 20px;
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      -webkit-background-clip: text;
+      color: transparent;
     }
 
+    .header p {
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+
+    /* Form Controls */
     .form-group {
       margin-bottom: 20px;
     }
 
     label {
+      font-weight: 500;
       display: block;
       margin-bottom: 8px;
-      font-weight: bold;
     }
 
-    input, button {
+    input {
       width: 100%;
-      padding: 10px;
-      font-size: 1em;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      padding: 12px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      transition: 0.3s;
     }
 
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    input:focus {
+      box-shadow: 0 0 15px #00c6ff;
+    }
+
+    /* Logo Preview */
     #preview {
       position: relative;
       width: 100%;
-      max-width: 500px;
-      aspect-ratio: 1; /* Square */
-      margin: 0 auto 20px;
-      border-radius: 8px;
+      max-width: 600px;
+      aspect-ratio: 1; /* Square shape */
+      margin: 20px auto;
+      border-radius: 15px;
       overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
     }
 
     #preview img {
@@ -83,30 +115,36 @@
       left: 50%;
       transform: translate(-50%, -50%);
       font-family: 'Lobster', cursive;
-      font-size: 50px;
-      color: white;
-      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+      font-size: 70px;
+      text-shadow: 0 5px 20px rgba(0, 0, 0, 0.8);
       pointer-events: none;
       text-align: center;
     }
 
+    /* Buttons */
     button {
-      background: #4a90e2;
-      color: white;
+      width: 100%;
+      padding: 12px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 10px;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 20px;
+      transition: 0.4s;
+      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      color: white;
     }
 
     button:hover {
-      background: #357ab8;
+      box-shadow: 0 0 25px #00c6ff;
     }
 
+    /* Footer */
     .footer {
-      background: #f0f0f0;
-      padding: 10px;
+      margin-top: 30px;
       text-align: center;
-      font-size: 0.9em;
-      color: #777;
+      font-size: 0.9rem;
+      opacity: 0.7;
     }
   </style>
 </head>
@@ -114,16 +152,11 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1>Logo Maker with AI Backgrounds</h1>
-      <p>Create your logo with dynamic AI-generated backgrounds!</p>
+      <h1>Logo Maker</h1>
+      <p>Create stunning logos with AI-powered backgrounds!</p>
     </div>
 
     <div class="content">
-      <div class="form-group">
-        <label for="nameInput">Enter Your Name</label>
-        <input type="text" id="nameInput" placeholder="Your Name Here">
-      </div>
-
       <div class="form-group">
         <label for="logoInput">Enter Logo Text</label>
         <input type="text" id="logoInput" placeholder="Your Logo Here">
@@ -144,7 +177,7 @@
     </div>
 
     <div class="footer">
-      <p>Powered by Unsplash & AI | Share your creations!</p>
+      <p>Made with ❤️ & Unsplash API | Share your creations!</p>
     </div>
   </div>
 
@@ -152,11 +185,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script>
-    // Your Unsplash API Key (no need to change again!)
     const unsplashAccessKey = 'Zzmp6LBsVLwofmnetTPC8Yw5sgtBBXHxanxoBL5-fRA';
 
-    // DOM Elements
-    const nameInput = document.getElementById('nameInput');
     const logoInput = document.getElementById('logoInput');
     const textColor = document.getElementById('textColor');
     const previewImage = document.getElementById('previewImage');
@@ -164,30 +194,29 @@
     const generateBtn = document.getElementById('generateBtn');
     const downloadBtn = document.getElementById('downloadBtn');
 
-    // Prompt themes
+    // Luxury-themed prompts
     const prompts = [
-      "futuristic cityscape with neon lights",
-      "serene beach sunset",
-      "galaxy scene with stars",
-      "abstract geometric patterns",
-      "cyberpunk street at night",
-      "vintage retro background",
-      "forest with glowing fireflies",
-      "urban graffiti wall",
-      "steampunk gears and cogs",
-      "sci-fi digital matrix"
+      "luxury marble texture",
+      "golden abstract background",
+      "futuristic neon glow",
+      "modern geometric art",
+      "premium dark gradient",
+      "minimalist aesthetic",
+      "crystal reflections",
+      "sleek tech design",
+      "royal velvet texture",
+      "abstract luxury vibe"
     ];
 
-    // Fetch random background from Unsplash
-    async function fetchBackground(name) {
+    // Fetch random Unsplash image
+    async function fetchBackground() {
       const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
-      const query = `${randomPrompt} ${name}`;
-      const response = await fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(query)}&client_id=${unsplashAccessKey}`);
+      const response = await fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(randomPrompt)}&client_id=${unsplashAccessKey}`);
       const data = await response.json();
       return data.urls.regular;
     }
 
-    // Update logo text dynamically
+    // Update logo text
     logoInput.addEventListener('input', () => {
       logoText.textContent = logoInput.value || 'Your Logo Here';
     });
@@ -196,10 +225,9 @@
       logoText.style.color = textColor.value;
     });
 
-    // Handle background generation
+    // Generate background
     generateBtn.addEventListener('click', async () => {
-      const name = nameInput.value || 'Logo';
-      const imageUrl = await fetchBackground(name);
+      const imageUrl = await fetchBackground();
       previewImage.src = imageUrl;
     });
 
