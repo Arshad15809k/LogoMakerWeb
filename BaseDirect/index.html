@@ -167,7 +167,7 @@
       100% { transform: translateX(2px); }
     }
     
-    /* Additional Effects (Example Options) */
+    /* Additional Effects */
     .vintage {
       filter: sepia(60%);
       text-shadow: 1px 1px 2px #000;
@@ -397,7 +397,10 @@
       clonePreview.style.top = "-9999px";
       document.body.appendChild(clonePreview);
       
-      // Get the cloned image and ensure cross-origin is set
+      // Force reflow
+      void clonePreview.offsetWidth;
+      
+      // Get the cloned image and set crossorigin
       const clonedImg = clonePreview.querySelector("img");
       clonedImg.setAttribute("crossorigin", "anonymous");
       
@@ -414,6 +417,9 @@
         }
       });
       
+      // Additional delay to ensure proper rendering
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       // Render the clone with html2canvas
       html2canvas(clonePreview, {
         useCORS: true,
@@ -423,8 +429,7 @@
         link.download = "AI-Logo.png";
         link.href = canvas.toDataURL("image/png");
         link.click();
-        
-        // Clean up: remove the clone and restore original border-radius
+        // Clean up: remove the clone and restore border-radius
         document.body.removeChild(clonePreview);
         preview.style.borderRadius = originalRadius;
       });
