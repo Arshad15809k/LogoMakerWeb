@@ -6,17 +6,12 @@
   <title>AI Logo Maker - Neon Glow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Import Fancy Fonts -->
+  <!-- Fancy Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&family=Monoton&family=Zen+Dots&family=Raleway+Dots&family=Rampart+One&display=swap" rel="stylesheet">
 
   <style>
     /* Base Styling */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
@@ -87,9 +82,7 @@
       color: white;
     }
 
-    input::placeholder {
-      color: rgba(255, 255, 255, 0.7);
-    }
+    input::placeholder { color: rgba(255, 255, 255, 0.7); }
 
     /* Logo Preview */
     #preview {
@@ -115,28 +108,23 @@
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
-      white-space: nowrap; /* Keeps logo in one line */
       pointer-events: none;
       transition: all 0.5s ease;
-      font-size: clamp(2rem, 8vw, 5rem);
+      font-size: clamp(2rem, 8vw, 5rem); /* Responsive */
       text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.5);
     }
 
-    /* Neon Glow Effect */
+    /* Neon Glow */
     .neon {
       animation: neonGlow 1.5s alternate infinite;
     }
 
     @keyframes neonGlow {
-      from {
-        text-shadow: 0 0 10px white, 0 0 20px cyan, 0 0 30px cyan;
-      }
-      to {
-        text-shadow: 0 0 20px white, 0 0 30px magenta, 0 0 40px magenta;
-      }
+      from { text-shadow: 0 0 20px cyan, 0 0 40px cyan; }
+      to { text-shadow: 0 0 30px magenta, 0 0 50px magenta; }
     }
 
-    /* Button */
+    /* Buttons */
     button {
       width: 100%;
       padding: 12px;
@@ -150,9 +138,7 @@
       transition: box-shadow 0.4s;
     }
 
-    button:hover {
-      box-shadow: 0 0 25px #00c6ff;
-    }
+    button:hover { box-shadow: 0 0 25px #00c6ff; }
 
     /* Footer */
     .footer {
@@ -163,13 +149,8 @@
     }
 
     @media (max-width: 600px) {
-      .header h1 {
-        font-size: 2rem;
-      }
-
-      .header p {
-        font-size: 1rem;
-      }
+      .header h1 { font-size: 2rem; }
+      .header p { font-size: 1rem; }
     }
 
   </style>
@@ -194,16 +175,15 @@
       <div id="logoText" class="neon">Your Logo Here</div>
     </div>
 
-    <button id="generateBtn">Generate AI Background</button>
+    <button id="generateBtn">Generate AI Logo</button>
     <button id="downloadBtn">Download Logo</button>
 
     <div class="footer">
-      <p>Made with ❤️ by Arshad & ChatGPT – Turning your ideas into art!</p>
+      <p>Made with ❤️ by Arshad & ChatGPT – Because creativity has no limits.</p>
     </div>
 
   </div>
 
-  <!-- Include html2canvas for Download -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script>
@@ -214,9 +194,17 @@
     const generateBtn = document.getElementById('generateBtn');
     const downloadBtn = document.getElementById('downloadBtn');
 
+    const prompts = [
+      "futuristic neon", "cyberpunk city", "holographic waves",
+      "luxury dark", "vaporwave", "retro neon sign"
+    ];
+
+    const fonts = ["Orbitron", "Monoton", "Zen Dots", "Rampart One", "Raleway Dots"];
+
     async function fetchBackground() {
-      const response = await fetch(`https://api.unsplash.com/photos/random?query=neon&client_id=${unsplashAccessKey}`);
-      const data = await response.json();
+      const prompt = prompts[Math.floor(Math.random() * prompts.length)];
+      const res = await fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(prompt)}&client_id=${unsplashAccessKey}`);
+      const data = await res.json();
       return data.urls.regular;
     }
 
@@ -225,15 +213,15 @@
     });
 
     generateBtn.addEventListener('click', async () => {
-      const imageUrl = await fetchBackground();
-      previewImage.src = imageUrl;
+      previewImage.src = await fetchBackground();
+      logoText.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
     });
 
     downloadBtn.addEventListener('click', () => {
       html2canvas(document.getElementById('preview')).then(canvas => {
         const link = document.createElement('a');
-        link.download = 'logo.png';
-        link.href = canvas.toDataURL('image/png');
+        link.download = 'AI-Logo.png';
+        link.href = canvas.toDataURL();
         link.click();
       });
     });
