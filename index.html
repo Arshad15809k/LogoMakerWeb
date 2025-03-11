@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Logo Maker</title>
+  <!-- Import a cool font from Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+  <style>
+    /* Basic Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      background: #4a90e2;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2em;
+      margin-bottom: 5px;
+    }
+
+    .header p {
+      font-size: 1em;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    #preview {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      background: #eee;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    #preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    #logoText {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Lobster', cursive;
+      font-size: 4em;
+      color: white;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .footer {
+      background: #f0f0f0;
+      padding: 10px;
+      text-align: center;
+      font-size: 0.9em;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Logo Maker</h1>
+      <p>Create your custom logo in minutes</p>
+    </div>
+    <div class="content">
+      <div class="form-group">
+        <label for="bgUpload">Upload Background Image</label>
+        <input type="file" id="bgUpload" accept="image/*">
+      </div>
+      <div class="form-group">
+        <label for="logoInput">Enter Logo Text</label>
+        <input type="text" id="logoInput" placeholder="Your Logo Here">
+      </div>
+      <div id="preview">
+        <!-- The preview area will display the uploaded image and the overlay text -->
+        <img id="previewImage" src="" alt="Background Preview" style="display: none;">
+        <div id="logoText">Your Logo Here</div>
+      </div>
+    </div>
+    <div class="footer">
+      <p>Share this website with your friends by deploying it online (e.g., on GitHub Pages, Netlify, or Vercel)!</p>
+    </div>
+  </div>
+
+  <script>
+    // JavaScript to handle image upload and logo text updates
+    const bgUpload = document.getElementById('bgUpload');
+    const previewImage = document.getElementById('previewImage');
+    const logoInput = document.getElementById('logoInput');
+    const logoText = document.getElementById('logoText');
+
+    bgUpload.addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          previewImage.src = e.target.result;
+          previewImage.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+
+    logoInput.addEventListener('input', function() {
+      logoText.textContent = logoInput.value || 'Your Logo Here';
+    });
+  </script>
+</body>
+</html>
