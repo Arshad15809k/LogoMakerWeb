@@ -124,13 +124,12 @@
       white-space: normal;
       word-wrap: break-word;
       pointer-events: none;
-      /* Default Neon Glow (will be overridden by effect classes) */
+      /* Default Neon Glow (overridden by effect classes) */
       text-shadow: 0 0 15px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.5);
     }
     
     /* Effects */
     .neon {
-      /* Neon glow effect */
       text-shadow:
         0 0 25px rgba(0, 255, 255, 0.9),
         0 0 50px rgba(0, 255, 255, 0.8),
@@ -144,7 +143,6 @@
     }
     
     .fire {
-      /* Fiery flicker effect */
       text-shadow:
         0 0 25px rgba(255, 85, 0, 0.9),
         0 0 50px rgba(255, 50, 0, 0.8),
@@ -158,7 +156,6 @@
     }
     
     .glitch {
-      /* Glitch effect with slight shake */
       text-shadow:
         -3px 0 5px rgba(255, 0, 0, 0.8),
         3px 0 5px rgba(0, 255, 255, 0.8);
@@ -264,7 +261,7 @@
     // Global effects array
     const effects = ["neon", "fire", "glitch"];
     
-    // Fetch a random background image from Unsplash using a random prompt
+    // Prompts for background images
     const prompts = [
       "futuristic neon", "cyberpunk city", "holographic waves", "luxury dark", "retro neon sign",
       "Fiery flames with intense red and orange glow, cinematic lighting",
@@ -272,6 +269,7 @@
       "Neon fire vortex, glowing heat waves, dramatic firestorm"
     ];
     
+    // Fetch a random background image from Unsplash using a random prompt
     async function fetchBackground() {
       const prompt = prompts[Math.floor(Math.random() * prompts.length)];
       const response = await fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(prompt)}&client_id=${unsplashAccessKey}`);
@@ -279,15 +277,17 @@
       return data.urls.regular;
     }
     
-    // Basic dominant color extraction from the top-left pixel
-    function extractDominantColor(img) {
+    // Improved color extraction: returns a contrasting color based on luminance
+    function extractContrastingColor(img) {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
       ctx.drawImage(img, 0, 0);
       const pixel = ctx.getImageData(0, 0, 1, 1).data;
-      return `rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
+      const [r, g, b] = pixel;
+      const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+      return luminance > 128 ? 'black' : 'white';
     }
     
     // Update the logo text when user types
@@ -312,7 +312,7 @@
       logoText.classList.add(...chosenEffects);
     };
     
-    // "Generate AI Logo" button: 1 random effect + new background + dynamic font & color matching
+    // "Generate AI Logo" button: 1 random effect + new background + dynamic font & contrasting color
     generateBtn.addEventListener('click', async () => {
       const bgUrl = await fetchBackground();
       previewImage.setAttribute("crossorigin", "anonymous");
@@ -320,8 +320,8 @@
       previewImage.onload = () => {
         // Random font selection
         logoText.style.fontFamily = getRandomFont();
-        // Dynamic color matching: extract dominant color and apply it
-        logoText.style.color = extractDominantColor(previewImage);
+        // Dynamic contrasting color matching
+        logoText.style.color = extractContrastingColor(previewImage);
         // Apply one random effect
         applyEffects(1);
       };
@@ -366,7 +366,7 @@
     });
     
   </script>
-
+  
 </body>
 
 </html>
