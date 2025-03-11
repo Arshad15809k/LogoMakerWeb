@@ -217,15 +217,29 @@
       previewImage.src = await fetchBackground();
       logoText.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
     });
+downloadBtn.addEventListener('click', async () => {
+  const preview = document.querySelector("#preview");
+  
+  // Ensure image loads with cross-origin
+  previewImage.setAttribute("crossorigin", "anonymous");
 
-    downloadBtn.addEventListener('click', () => {
-      html2canvas(document.querySelector("#preview"), { useCORS: true }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'AI-Logo.png';
-        link.href = canvas.toDataURL();
-        link.click();
-      });
+  // Wait for the image to load completely before capturing
+  previewImage.onload = () => {
+    html2canvas(preview, {
+      useCORS: true,  // Enable cross-origin image capturing
+      allowTaint: true,
+    }).then((canvas) => {
+      const link = document.createElement("a");
+      link.download = "AI-Logo.png";
+      link.href = canvas.toDataURL();
+      link.click();
     });
+  };
+
+  // Reload image to apply crossorigin settings
+  previewImage.src = previewImage.src;
+});
+  
 
   </script>
 
