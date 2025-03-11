@@ -8,7 +8,7 @@
 
   <!-- Fancy Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&family=Monoton&family=Zen+Dots&family=Rampart+One&family=Bungee+Shade&family=Black+Ops+One&family=Rubik+Iso&family=Permanent+Marker&family=Big+Shoulders+Stencil+Display&family=Creepster&family=Exo+2:wght@700&family=Faster+One&family=Lobster&family=Patua+One&family=Russo+One&family=Sriracha&family=Tourney:wght@900&family=UnifrakturMaguntia&family=Ultra&family=Flamenco&family=Chakra+Petch:wght@700&family=Metal+Mania&family=Iceberg&family=Stalinist+One&family=Dokdo&display=swap" rel="stylesheet">
-
+  
   <style>
     * {
       box-sizing: border-box;
@@ -110,37 +110,25 @@
       transform: translate(-50%, -50%);
       text-align: center;
       font-size: clamp(2rem, 8vw, 5rem);
-      max-width: 90%;
-      white-space: normal;
-      word-wrap: break-word;
-      pointer-events: none;
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.5);
+      pointer-events: none ;
+      max-width: 90%; /* Increased width to prevent early wrapping */
+      white-space: normal; /* Allow multi-line if needed */
+      word-wrap: break-word; /* Ensure long words wrap properly */
     }
 
-    /* Neon Effect */
     .neon {
-      text-shadow: 0 0 25px cyan, 0 0 50px cyan;
+      animation: neonGlow 1.5s alternate infinite;
     }
 
-    /* Fire Effect */
-    .fire {
-      text-shadow: 0 0 25px rgba(255, 85, 0, 0.9), 0 0 50px rgba(255, 50, 0, 0.8), 0 0 90px rgba(255, 0, 0, 0.7);
-      animation: fire-flicker 1.5s infinite alternate;
-    }
+    @keyframes neonGlow {
+      from {
+        text-shadow: 0 0 20px cyan, 0 0 40px cyan;
+      }
 
-    @keyframes fire-flicker {
-      0% { text-shadow: 0 0 30px #ff4500; }
-      100% { text-shadow: 0 0 50px #ff6347; }
-    }
-
-    /* Glitch Effect */
-    .glitch {
-      text-shadow: -3px 0 5px rgba(255, 0, 0, 0.8), 3px 0 5px rgba(0, 255, 255, 0.8);
-      animation: glitch-shake 0.2s infinite alternate;
-    }
-
-    @keyframes glitch-shake {
-      0% { transform: translateX(-2px); }
-      100% { transform: translateX(2px); }
+      to {
+        text-shadow: 0 0 30px magenta, 0 0 50px magenta;
+      }
     }
 
     button {
@@ -166,6 +154,12 @@
       font-size: 0.9rem;
       opacity: 0.7;
     }
+
+    @media (max-width: 600px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+    }
   </style>
 
 </head>
@@ -190,8 +184,6 @@
     </div>
 
     <button id="generateBtn">Generate AI Logo</button>
-    <button id="comboBtn">Combo Effects</button>
-    <button id="superBtn">Super Effects</button>
     <button id="downloadBtn">Download Logo</button>
 
     <div class="footer">
@@ -203,19 +195,73 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script>
-    const effects = ["neon", "fire", "glitch"];
-    const logoText = document.getElementById("logoText");
+    const unsplashAccessKey = '6FJjoJ8A2BB1FgI9P2ZZYq20Cmi88jHrOSkdn1CI8fw';
+    const logoInput = document.getElementById('logoInput');
+    const previewImage = document.getElementById('previewImage');
+    const logoText = document.getElementById('logoText');
+    const generateBtn = document.getElementById('generateBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
 
-    const applyEffects = (count) => {
-      logoText.className = "";
-      for (let i = 0; i < count; i++) {
-        const randomEffect = effects[Math.floor(Math.random() * effects.length)];
-        logoText.classList.add(randomEffect);
-      }
-    };
+    const prompts = ["futuristic neon", "cyberpunk city", "holographic waves", "luxury dark", "retro neon sign", "Fiery flames with intense red and orange glow, cinematic lighting",
+  "Blazing inferno with sparks and embers flying, dark background",
+  "Neon fire vortex, glowing heat waves, dramatic firestorm"];
+    const fonts = [
+  "Orbitron", "Monoton", "Zen Dots", "Rampart One",
+  "Press Start 2P", "Bungee Shade", "Black Ops One", "Rubik Iso",
+  "Permanent Marker", "Big Shoulders Stencil Display", "Creepster",
+  "Exo 2", "Faster One", "Lobster", "Patua One",
+  "Russo One", "Sriracha", "Tourney", "UnifrakturMaguntia", "Ultra",
+  "Flamenco", "Chakra Petch", "Metal Mania", "Iceberg",
+  "Stalinist One", "Dokdo"
+];
 
-    document.getElementById("comboBtn").addEventListener("click", () => applyEffects(2));
-    document.getElementById("superBtn").addEventListener("click", () => applyEffects(3));
+
+    async function fetchBackground() {
+      const prompt = prompts[Math.floor(Math.random() * prompts.length)];
+      const response = await fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(prompt)}&client_id=${unsplashAccessKey}`);
+      const data = await response.json();
+      return data.urls.regular;
+    }
+
+    logoInput.addEventListener('input', () => {
+      logoText.textContent = logoInput.value || 'Your Logo Here';
+    });
+
+    generateBtn.addEventListener('click', async () => {
+      previewImage.src = await fetchBackground();
+      logoText.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
+    });
+
+    
+downloadBtn.addEventListener('click', async () => {
+  const preview = document.querySelector("#preview");
+
+  // Remove border-radius for square corners
+  preview.style.borderRadius = "0";
+
+  // Ensure image loads with cross-origin
+  previewImage.setAttribute("crossorigin", "anonymous");
+
+  previewImage.onload = () => {
+    html2canvas(preview, {
+      useCORS: true,
+      allowTaint: true,
+    }).then((canvas) => {
+      const link = document.createElement("a");
+      link.download = "AI-Logo.png";
+      link.href = canvas.toDataURL();
+      link.click();
+
+      // Restore rounded corners after download
+      preview.style.borderRadius = "15px";
+    });
+  };
+
+  previewImage.src = previewImage.src; // Reload image to capture with CORS
+});
+
+  
+
   </script>
 
 </body>
