@@ -115,9 +115,10 @@
       left: 50%;
       transform: translate(-50%, -50%);
       text-align: center;
+      white-space: nowrap; /* Keeps logo in one line */
       pointer-events: none;
       transition: all 0.5s ease;
-      font-size: clamp(2rem, 8vw, 5rem); /* Responsive */
+      font-size: clamp(2rem, 8vw, 5rem);
       text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.5);
     }
 
@@ -194,9 +195,10 @@
     </div>
 
     <button id="generateBtn">Generate AI Background</button>
+    <button id="downloadBtn">Download Logo</button>
 
     <div class="footer">
-      <p>Made with ❤️ and Unsplash API</p>
+      <p>Made with ❤️ by Arshad & ChatGPT – Turning your ideas into art!</p>
     </div>
 
   </div>
@@ -210,19 +212,10 @@
     const previewImage = document.getElementById('previewImage');
     const logoText = document.getElementById('logoText');
     const generateBtn = document.getElementById('generateBtn');
-
-    const prompts = [
-      "futuristic neon lights", "cyberpunk city", "holographic waves",
-      "luxury dark texture", "vaporwave aesthetics", "neon glow background"
-    ];
-
-    const fonts = [
-      "Orbitron", "Monoton", "Zen Dots", "Rampart One", "Raleway Dots"
-    ];
+    const downloadBtn = document.getElementById('downloadBtn');
 
     async function fetchBackground() {
-      const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
-      const response = await fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(randomPrompt)}&client_id=${unsplashAccessKey}`);
+      const response = await fetch(`https://api.unsplash.com/photos/random?query=neon&client_id=${unsplashAccessKey}`);
       const data = await response.json();
       return data.urls.regular;
     }
@@ -234,10 +227,15 @@
     generateBtn.addEventListener('click', async () => {
       const imageUrl = await fetchBackground();
       previewImage.src = imageUrl;
+    });
 
-      previewImage.onload = () => {
-        logoText.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
-      };
+    downloadBtn.addEventListener('click', () => {
+      html2canvas(document.getElementById('preview')).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'logo.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
     });
 
   </script>
