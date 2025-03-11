@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Logo Maker - Ultimate Upgrade</title>
+  <title>Neon Logo Maker - Ultimate Upgrade</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- Import Many Fancy Fonts -->
@@ -166,56 +166,50 @@
       0% { transform: translateX(-2px); }
       100% { transform: translateX(2px); }
     }
-
+    
+    /* Additional Effects (Example Options) */
     .vintage {
-  filter: sepia(60%);
-  text-shadow: 1px 1px 2px #000;
+      filter: sepia(60%);
+      text-shadow: 1px 1px 2px #000;
     }
-
     
     .shadowPulse {
-  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  animation: pulse 1s infinite;
-}
-@keyframes pulse {
-  0% { text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
-  100% { text-shadow: 0 0 20px rgba(0, 0, 0, 0.8); }
-}
-
+      text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0% { text-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
+      100% { text-shadow: 0 0 20px rgba(0, 0, 0, 0.8); }
+    }
     
     .rainbowGlow {
-  animation: rainbowGlowAnim 3s infinite;
-}
-@keyframes rainbowGlowAnim {
-  0% { text-shadow: 0 0 10px red; }
-  20% { text-shadow: 0 0 10px orange; }
-  40% { text-shadow: 0 0 10px yellow; }
-  60% { text-shadow: 0 0 10px green; }
-  80% { text-shadow: 0 0 10px blue; }
-  100% { text-shadow: 0 0 10px violet; }
-}
-
-
-    .outlineGlow {
-  color: transparent;
-  -webkit-text-stroke: 1px white;
-  text-shadow: 0 0 5px white, 0 0 10px white;
+      animation: rainbowGlowAnim 3s infinite;
     }
-
-
-    .jitter {
-  animation: jitterAnim 0.1s infinite;
-}
-@keyframes jitterAnim {
-  0% { transform: translate(0, 0); }
-  25% { transform: translate(2px, -2px); }
-  50% { transform: translate(-2px, 2px); }
-  75% { transform: translate(2px, 2px); }
-  100% { transform: translate(-2px, -2px); }
-}
+    @keyframes rainbowGlowAnim {
+      0% { text-shadow: 0 0 10px red; }
+      20% { text-shadow: 0 0 10px orange; }
+      40% { text-shadow: 0 0 10px yellow; }
+      60% { text-shadow: 0 0 10px green; }
+      80% { text-shadow: 0 0 10px blue; }
+      100% { text-shadow: 0 0 10px violet; }
+    }
     
-
-
+    .outlineGlow {
+      color: transparent;
+      -webkit-text-stroke: 1px white;
+      text-shadow: 0 0 5px white, 0 0 10px white;
+    }
+    
+    .jitter {
+      animation: jitterAnim 0.1s infinite;
+    }
+    @keyframes jitterAnim {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(2px, -2px); }
+      50% { transform: translate(-2px, 2px); }
+      75% { transform: translate(2px, 2px); }
+      100% { transform: translate(-2px, -2px); }
+    }
     
     /* Buttons */
     button {
@@ -256,7 +250,7 @@
 
   <div class="container">
     <div class="header">
-      <h1>Logo Maker</h1>
+      <h1>Neon Logo Maker</h1>
       <p>Create stunning AI-generated logos!</p>
     </div>
 
@@ -309,7 +303,7 @@
     ];
     
     // Global effects array
-    const effects = ["neon", "fire", "glitch", "outlineGlow", "rainbowGlow"];
+    const effects = ["neon", "fire", "glitch", "outlineGlow", "rainbowGlow", "jitter", "vintage", "shadowPulse"];
     
     // Prompts for background images
     const prompts = [
@@ -388,51 +382,53 @@
       logoText.style.fontFamily = getRandomFont();
       applyEffects(3);
     });
-
-downloadBtn.addEventListener('click', async () => {
-  const preview = document.getElementById("preview");
-  const originalRadius = preview.style.borderRadius;
-  
-  // Temporarily remove border-radius for a square capture
-  preview.style.borderRadius = "0";
-  
-  // Clone the preview element and move it offscreen
-  const clonePreview = preview.cloneNode(true);
-  clonePreview.style.position = "absolute";
-  clonePreview.style.top = "-9999px";
-  document.body.appendChild(clonePreview);
-  
-  // Get the image from the clone and ensure it uses CORS
-  const clonedImg = clonePreview.querySelector("img");
-  clonedImg.setAttribute("crossorigin", "anonymous");
-  
-  // Wait for the cloned image to be fully loaded (if not already)
-  await new Promise((resolve) => {
-    if (clonedImg.complete) {
-      resolve();
-    } else {
-      clonedImg.onload = resolve;
-      clonedImg.onerror = resolve;
-    }
-  });
-  
-  // Use html2canvas on the clone
-  html2canvas(clonePreview, {
-    useCORS: true,
-    allowTaint: true,
-  }).then((canvas) => {
-    const link = document.createElement("a");
-    link.download = "AI-Logo.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
     
-    // Clean up: remove the clone and restore border-radius
-    document.body.removeChild(clonePreview);
-    preview.style.borderRadius = originalRadius;
-  });
-});
-
-    
+    // "Download Logo" button: capture the preview with square corners
+    downloadBtn.addEventListener('click', async () => {
+      const preview = document.getElementById("preview");
+      const originalRadius = preview.style.borderRadius;
+      
+      // Temporarily remove border-radius for a square capture
+      preview.style.borderRadius = "0";
+      
+      // Clone the preview element and move it offscreen
+      const clonePreview = preview.cloneNode(true);
+      clonePreview.style.position = "absolute";
+      clonePreview.style.top = "-9999px";
+      document.body.appendChild(clonePreview);
+      
+      // Get the cloned image and ensure cross-origin is set
+      const clonedImg = clonePreview.querySelector("img");
+      clonedImg.setAttribute("crossorigin", "anonymous");
+      
+      // Force reload by appending a timestamp to bypass cache
+      clonedImg.src = clonedImg.src.split('?')[0] + '?t=' + new Date().getTime();
+      
+      // Wait for the cloned image to fully load
+      await new Promise((resolve) => {
+        if (clonedImg.complete) {
+          resolve();
+        } else {
+          clonedImg.onload = resolve;
+          clonedImg.onerror = resolve;
+        }
+      });
+      
+      // Render the clone with html2canvas
+      html2canvas(clonePreview, {
+        useCORS: true,
+        allowTaint: true,
+      }).then((canvas) => {
+        const link = document.createElement("a");
+        link.download = "AI-Logo.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+        
+        // Clean up: remove the clone and restore original border-radius
+        document.body.removeChild(clonePreview);
+        preview.style.borderRadius = originalRadius;
+      });
+    });
     
   </script>
   
