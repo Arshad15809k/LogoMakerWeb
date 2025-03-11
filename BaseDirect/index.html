@@ -3,23 +3,30 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>AI Logo Maker - Neon Edition</title>
-  <!-- Import Cool Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&family=Monoton&family=Rampart+One&family=Bungee+Spice&display=swap" rel="stylesheet">
+  <title>AI Logo Maker - Neon Glow</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Import Fancy Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&family=Monoton&family=Zen+Dots&family=Raleway+Dots&family=Rampart+One&display=swap" rel="stylesheet">
+
   <style>
-    /* Premium Gradient Background */
-    body {
+    /* Base Styling */
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
+    }
+
+    body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
     }
 
     /* Glassmorphic Container */
@@ -29,13 +36,11 @@
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(20px);
       border-radius: 20px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-      overflow: hidden;
-      padding: 40px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      padding: 30px;
       animation: fadeIn 1s ease-in-out;
     }
 
-    /* Fade-in Animation */
     @keyframes fadeIn {
       from { opacity: 0; }
       to { opacity: 1; }
@@ -48,10 +53,9 @@
     }
 
     .header h1 {
-      font-size: 3rem;
+      font-size: 2.8rem;
       font-weight: 700;
-      margin-bottom: 10px;
-      background: linear-gradient(90deg, #00c6ff, #0072ff);
+      background: linear-gradient(90deg, #00c6ff, #ff00ff);
       -webkit-background-clip: text;
       color: transparent;
     }
@@ -61,7 +65,7 @@
       opacity: 0.8;
     }
 
-    /* Form Controls */
+    /* Form */
     .form-group {
       margin-bottom: 20px;
     }
@@ -81,15 +85,10 @@
       outline: none;
       background: rgba(255, 255, 255, 0.2);
       color: white;
-      transition: 0.3s;
     }
 
     input::placeholder {
       color: rgba(255, 255, 255, 0.7);
-    }
-
-    input:focus {
-      box-shadow: 0 0 15px #00c6ff;
     }
 
     /* Logo Preview */
@@ -97,11 +96,11 @@
       position: relative;
       width: 100%;
       max-width: 600px;
-      aspect-ratio: 1; /* Square shape */
+      aspect-ratio: 1;
       margin: 20px auto;
       border-radius: 15px;
       overflow: hidden;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     }
 
     #preview img {
@@ -115,14 +114,28 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 70px;
-      text-shadow: 0 5px 20px rgba(0, 0, 0, 0.8);
-      pointer-events: none;
       text-align: center;
-      transition: color 0.5s ease;
+      pointer-events: none;
+      transition: all 0.5s ease;
+      font-size: clamp(2rem, 8vw, 5rem); /* Responsive */
+      text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.5);
     }
 
-    /* Buttons */
+    /* Neon Glow Effect */
+    .neon {
+      animation: neonGlow 1.5s alternate infinite;
+    }
+
+    @keyframes neonGlow {
+      from {
+        text-shadow: 0 0 10px white, 0 0 20px cyan, 0 0 30px cyan;
+      }
+      to {
+        text-shadow: 0 0 20px white, 0 0 30px magenta, 0 0 40px magenta;
+      }
+    }
+
+    /* Button */
     button {
       width: 100%;
       padding: 12px;
@@ -131,9 +144,9 @@
       border-radius: 10px;
       cursor: pointer;
       margin-top: 20px;
-      transition: 0.4s;
       background: linear-gradient(90deg, #00c6ff, #0072ff);
       color: white;
+      transition: box-shadow 0.4s;
     }
 
     button:hover {
@@ -147,57 +160,64 @@
       font-size: 0.9rem;
       opacity: 0.7;
     }
+
+    @media (max-width: 600px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .header p {
+        font-size: 1rem;
+      }
+    }
+
   </style>
 </head>
 
 <body>
+
   <div class="container">
+
     <div class="header">
-      <h1>Logo Maker</h1>
-      <p>Create stunning logos with AI-powered backgrounds!</p>
+      <h1>Neon Logo Maker</h1>
+      <p>Create stunning AI-generated logos!</p>
     </div>
 
-    <div class="content">
-      <div class="form-group">
-        <label for="logoInput">Enter Logo Text</label>
-        <input type="text" id="logoInput" placeholder="Your Logo Here">
-      </div>
-
-      <div id="preview">
-        <img id="previewImage" src="" alt="AI Background" />
-        <div id="logoText">Your Logo Here</div>
-      </div>
-
-      <button id="generateBtn">Generate AI Background</button>
-      <button id="downloadBtn">Download Logo</button>
+    <div class="form-group">
+      <label for="logoInput">Enter Logo Text</label>
+      <input type="text" id="logoInput" placeholder="Your Logo Here">
     </div>
+
+    <div id="preview">
+      <img id="previewImage" src="" alt="AI Background" />
+      <div id="logoText" class="neon">Your Logo Here</div>
+    </div>
+
+    <button id="generateBtn">Generate AI Background</button>
 
     <div class="footer">
-      <p>Made with ❤️ & Unsplash API | Share your creations!</p>
+      <p>Made with ❤️ and Unsplash API</p>
     </div>
+
   </div>
 
-  <!-- Include html2canvas for downloading -->
+  <!-- Include html2canvas for Download -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
   <script>
     const unsplashAccessKey = 'Zzmp6LBsVLwofmnetTPC8Yw5sgtBBXHxanxoBL5-fRA';
-
     const logoInput = document.getElementById('logoInput');
     const previewImage = document.getElementById('previewImage');
     const logoText = document.getElementById('logoText');
     const generateBtn = document.getElementById('generateBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
 
     const prompts = [
-      "luxury marble texture", "golden abstract background",
-      "futuristic neon glow", "modern geometric art",
-      "premium dark gradient", "minimalist aesthetic",
-      "crystal reflections", "sleek tech design"
+      "futuristic neon lights", "cyberpunk city", "holographic waves",
+      "luxury dark texture", "vaporwave aesthetics", "neon glow background"
     ];
 
     const fonts = [
-      "Orbitron", "Press Start 2P", "Monoton", "Rampart One", "Bungee Spice"
+      "Orbitron", "Monoton", "Zen Dots", "Rampart One", "Raleway Dots"
     ];
 
     async function fetchBackground() {
@@ -205,16 +225,6 @@
       const response = await fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(randomPrompt)}&client_id=${unsplashAccessKey}`);
       const data = await response.json();
       return data.urls.regular;
-    }
-
-    function extractDominantColor(img) {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      const pixel = ctx.getImageData(0, 0, 1, 1).data;
-      return `rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
     }
 
     logoInput.addEventListener('input', () => {
@@ -226,10 +236,10 @@
       previewImage.src = imageUrl;
 
       previewImage.onload = () => {
-        logoText.style.color = extractDominantColor(previewImage);
         logoText.style.fontFamily = fonts[Math.floor(Math.random() * fonts.length)];
       };
     });
+
   </script>
 
 </body>
