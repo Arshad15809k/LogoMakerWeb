@@ -7,8 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Fancy Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&family=Monoton&family=Zen+Dots&family=Raleway+Dots&family=Rampart+One&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&family=Monoton&family=Zen+Dots&family=Rampart+One&family=Bungee+Shade&family=Black+Ops+One&family=Rubik+Iso&family=Permanent+Marker&family=Big+Shoulders+Stencil+Display&family=Creepster&family=Exo+2:wght@700&family=Faster+One&family=Lobster&family=Patua+One&family=Russo+One&family=Sriracha&family=Tourney:wght@900&family=UnifrakturMaguntia&family=Ultra&family=Flamenco&family=Chakra+Petch:wght@700&family=Metal+Mania&family=Iceberg&family=Stalinist+One&family=Dokdo&display=swap" rel="stylesheet">
+  
   <style>
     * {
       box-sizing: border-box;
@@ -203,7 +203,16 @@
     const downloadBtn = document.getElementById('downloadBtn');
 
     const prompts = ["futuristic neon", "cyberpunk city", "holographic waves", "luxury dark", "retro neon sign"];
-    const fonts = ["Orbitron", "Monoton", "Zen Dots", "Rampart One", "Raleway Dots"];
+    const fonts = [
+  "Orbitron", "Monoton", "Zen Dots", "Rampart One",
+  "Press Start 2P", "Bungee Shade", "Black Ops One", "Rubik Iso",
+  "Permanent Marker", "Big Shoulders Stencil Display", "Creepster",
+  "Exo 2", "Faster One", "Lobster", "Patua One",
+  "Russo One", "Sriracha", "Tourney", "UnifrakturMaguntia", "Ultra",
+  "Flamenco", "Chakra Petch", "Metal Mania", "Iceberg",
+  "Stalinist One", "Dokdo"
+];
+
 
     async function fetchBackground() {
       const prompt = prompts[Math.floor(Math.random() * prompts.length)];
