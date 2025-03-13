@@ -315,16 +315,6 @@
       "Stalinist One", "Dokdo"
     ];
 
-    // Add Sentry
-
-    <script>
-  Sentry.onLoad(function() {
-    Sentry.init({
-        // You can add any additional configuration here
-      });
-  });
-</script>
-
   
     
     // Global effects array
@@ -443,7 +433,16 @@ document.getElementById('downloadBtn').addEventListener('click', downloadLogo);
 
         // Intentional Error
         myUndefinedFunction()
-    
+        // Add Sentry
+
+    <script>
+  Sentry.onLoad(function() {
+    Sentry.init({
+        // You can add any additional configuration here
+      });
+  });
+</script>
+  
   </script>
   
 </body>
