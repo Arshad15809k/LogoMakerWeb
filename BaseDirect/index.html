@@ -411,9 +411,10 @@
           preview.style.borderRadius = originalRadius;
         });
       };
-      // Reload the image to apply crossorigin settings
-      previewImage.src = previewImage.src;
-    });
+        // Append a timestamp to force a new request
+  const baseUrl = previewImage.src.split('?')[0];
+  previewImage.src = `${baseUrl}?t=${new Date().getTime()}`;
+});
     
   </script>
   
