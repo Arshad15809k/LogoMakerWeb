@@ -392,18 +392,26 @@
 // Download Function
 function downloadLogo() {
   const preview = document.getElementById('preview');
+  const previewImage = document.getElementById('previewImage');
 
-  html2canvas(preview, { useCORS: true }).then((canvas) => {
-    const link = document.createElement('a');
-    link.download = 'AI-Logo.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  });
+  // Force reload image by appending a cache-busting query
+  const newImageSrc = previewImage.src.split('?')[0] + '?' + new Date().getTime();
+  previewImage.src = newImageSrc;
+
+  // Ensure image is fully loaded before capturing
+  previewImage.onload = () => {
+    html2canvas(preview, { useCORS: true }).then((canvas) => {
+      const link = document.createElement('a');
+      link.download = 'AI-Logo1.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+  };
 }
 
-// Call this function when the download button is clicked
+// Attach event listener
 document.getElementById('downloadBtn').addEventListener('click', downloadLogo);
-                                 
+
     
   </script>
   
