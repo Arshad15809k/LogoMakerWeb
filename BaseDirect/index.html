@@ -392,20 +392,30 @@
 downloadBtn.addEventListener('click', () => {
   const preview = document.getElementById("preview");
   
-  // Use html2canvas's onclone callback to modify the cloned node.
-  html2canvas(preview, {
+  // Create a new off-screen clone of the preview element.
+  const previewClone = preview.cloneNode(true);
+  previewClone.style.borderRadius = "0";  // Remove the border-radius for download.
+  
+  // Position the clone off-screen so it doesn't affect your layout.
+  previewClone.style.position = "fixed";
+  previewClone.style.top = "-9999px";
+  previewClone.style.left = "-9999px";
+  document.body.appendChild(previewClone);
+  
+  html2canvas(previewClone, {
     useCORS: true,
     allowTaint: true,
-    onclone: (clonedDoc) => {
-      // Remove border-radius in the clone so the image is square.
-      const clonedPreview = clonedDoc.getElementById("preview");
-      clonedPreview.style.borderRadius = "0";
-    }
   }).then(canvas => {
     const link = document.createElement("a");
     link.download = "AI-Logo.png";
     link.href = canvas.toDataURL();
     link.click();
+    // Remove the clone after capturing.
+    document.body.removeChild(previewClone);
+  }).catch(err => {
+    console.error("Error capturing the preview:", err);
+    // Remove the clone if an error occurs.
+    document.body.removeChild(previewClone);
   });
 });
 
