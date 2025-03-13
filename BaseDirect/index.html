@@ -280,7 +280,7 @@
     <button id="downloadBtn">Download Logo</button>
 
     <div class="footer">
-      <p>Made with ❤️ by Arshad & ChatGPT – Because a berozgar aspirant has no limits. Trail - 68.</p>
+      <p>Made with ❤️ by Arshad & ChatGPT – Because a berozgar aspirant has no limits. Trail - 69.</p>
     </div>
   </div>
 
@@ -394,22 +394,34 @@
       applyEffects(3);
     });
     
-function downloadLogo() {
-  fetch('/.netlify/functions/download')
-    .then(response => response.blob())
-    .then(blob => {
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'AI-Logo.png';
-      link.click();
-    })
-    .catch(error => {
-      alert('Download failed');
-      console.error('Error:', error);
+async function downloadLogo() {
+  const text = logoInput.value || 'Your Logo Here';
+  const bgUrl = previewImage.src;
+  const font = logoText.style.fontFamily;
+
+  try {
+    const response = await fetch('/.netlify/functions/downloadLogo', {
+      method: 'POST',
+      body: JSON.stringify({ text, bgUrl, font }),
     });
+
+    if (!response.ok) throw new Error('Failed to download logo');
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'AI-Log9q.png';
+    document.body.appendChild(link);
+    link.click();
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error('Download Error:', err);
+  }
 }
 
-document.getElementById('downloadBtn').addEventListener('click', downloadLogo);
+downloadBtn.addEventListener('click', downloadLogo);
+
 
   
   </script>
