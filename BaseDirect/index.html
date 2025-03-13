@@ -256,7 +256,7 @@
 
   <div class="container">
     <div class="header">
-      <h1>Neon Logo Maker</h1>
+      <h1>The Logo Maker</h1>
       <p>Create stunning AI-generated logos!</p>
     </div>
 
@@ -393,14 +393,22 @@ downloadBtn.addEventListener('click', () => {
   const preview = document.getElementById("preview");
   const originalRadius = preview.style.borderRadius;
   preview.style.borderRadius = "0";
-
-  previewImage.setAttribute("crossorigin", "anonymous");
-
-  // Clear any existing onload handler
-  previewImage.onload = null;
-
-  const runCanvasCapture = () => {
-    html2canvas(preview, {
+  
+  // Clone the preview container so we work on a fresh copy.
+  const previewClone = preview.cloneNode(true);
+  const clonedImg = previewClone.querySelector("img");
+  
+  // Create a new image element to force a reload.
+  const newImg = new Image();
+  newImg.crossOrigin = 'anonymous';
+  newImg.src = clonedImg.src;
+  
+  newImg.onload = () => {
+    // Update the cloned preview with the new image source.
+    clonedImg.src = newImg.src;
+    
+    // Now capture the cloned preview.
+    html2canvas(previewClone, {
       useCORS: true,
       allowTaint: true,
     }).then(canvas => {
@@ -408,22 +416,12 @@ downloadBtn.addEventListener('click', () => {
       link.download = "AI-Logo.png";
       link.href = canvas.toDataURL();
       link.click();
+      // Restore original border radius.
       preview.style.borderRadius = originalRadius;
     });
   };
-
-  // If the image is already loaded, capture immediately.
-  if (previewImage.complete && previewImage.naturalHeight !== 0) {
-    runCanvasCapture();
-  } else {
-    // Otherwise, wait until the image loads.
-    previewImage.onload = () => {
-      runCanvasCapture();
-      // Clear the onload to avoid duplicate calls.
-      previewImage.onload = null;
-    };
-  }
 });
+
 
     
   </script>
