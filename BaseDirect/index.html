@@ -256,7 +256,7 @@
 
   <div class="container">
     <div class="header">
-      <h1>The Logo Maker</h1>
+      <h1>Neon Logo Maker</h1>
       <p>Create stunning AI-generated logos!</p>
     </div>
 
@@ -391,35 +391,22 @@
     
 downloadBtn.addEventListener('click', () => {
   const preview = document.getElementById("preview");
-  const originalRadius = preview.style.borderRadius;
-  preview.style.borderRadius = "0";
   
-  // Clone the preview container so we work on a fresh copy.
-  const previewClone = preview.cloneNode(true);
-  const clonedImg = previewClone.querySelector("img");
-  
-  // Create a new image element to force a reload.
-  const newImg = new Image();
-  newImg.crossOrigin = 'anonymous';
-  newImg.src = clonedImg.src;
-  
-  newImg.onload = () => {
-    // Update the cloned preview with the new image source.
-    clonedImg.src = newImg.src;
-    
-    // Now capture the cloned preview.
-    html2canvas(previewClone, {
-      useCORS: true,
-      allowTaint: true,
-    }).then(canvas => {
-      const link = document.createElement("a");
-      link.download = "AI-Logo.png";
-      link.href = canvas.toDataURL();
-      link.click();
-      // Restore original border radius.
-      preview.style.borderRadius = originalRadius;
-    });
-  };
+  // Use html2canvas's onclone callback to modify the cloned node.
+  html2canvas(preview, {
+    useCORS: true,
+    allowTaint: true,
+    onclone: (clonedDoc) => {
+      // Remove border-radius in the clone so the image is square.
+      const clonedPreview = clonedDoc.getElementById("preview");
+      clonedPreview.style.borderRadius = "0";
+    }
+  }).then(canvas => {
+    const link = document.createElement("a");
+    link.download = "AI-Logo.png";
+    link.href = canvas.toDataURL();
+    link.click();
+  });
 });
 
 
