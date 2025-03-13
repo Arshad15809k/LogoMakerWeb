@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<script
-  src="https://js-de.sentry-cdn.com/2b1a347a5138a3a07582f53c646e1dba.min.js"
-  crossorigin="anonymous"
-></script>
 
 <html lang="en">
 
@@ -399,49 +395,22 @@
     });
     
 function downloadLogo() {
-  const preview = document.getElementById('preview');
-  // Clone the preview element
-  const clone = preview.cloneNode(true);
-
-  // For each image in the clone, force a fresh load by appending a timestamp
-  const images = clone.querySelectorAll('img');
-  images.forEach(img => {
-    const originalSrc = img.getAttribute('src');
-    img.setAttribute('src', originalSrc.split('?')[0] + '?t=' + Date.now());
-  });
-
-  // Position the clone off-screen
-  clone.style.position = 'absolute';
-  clone.style.top = '-10000px';
-  document.body.appendChild(clone);
-
-  // Capture the clone with html2canvas
-  html2canvas(clone, { useCORS: true }).then(canvas => {
-    // Create a download link from the canvas
-    const link = document.createElement('a');
-    link.download = 'AI-Logo.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  }).finally(() => {
-    // Clean up: Remove the clone completely after capturing
-    document.body.removeChild(clone);
-  });
+  fetch('/.netlify/functions/download')
+    .then(response => response.blob())
+    .then(blob => {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'AI-Logo.png';
+      link.click();
+    })
+    .catch(error => {
+      alert('Download failed');
+      console.error('Error:', error);
+    });
 }
 
-// Attach the download function to your download button
 document.getElementById('downloadBtn').addEventListener('click', downloadLogo);
 
-        // Intentional Error
-        myUndefinedFunction()
-        // Add Sentry
-
-    <script>
-  Sentry.onLoad(function() {
-    Sentry.init({
-        // You can add any additional configuration here
-      });
-  });
-</script>
   
   </script>
   
