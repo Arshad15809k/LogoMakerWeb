@@ -374,80 +374,49 @@
         logoText.style.color = extractContrastingColor(previewImage);
         // Apply one random effect
         applyEffects(1);
-      };
+      };?
     });
-
-    // New Code Start
-
-    // Improved Download Button Logic (Fixed CORS Issue)
-downloadBtn.addEventListener('click', () => {
-  const preview = document.getElementById("preview");
-
-  // Temporarily remove border-radius for clean capture
-  const originalRadius = preview.style.borderRadius;
-  preview.style.borderRadius = "0";
-
-  html2canvas(preview, {
-    useCORS: true,
-    allowTaint: true,
-    scale: 2, // Higher quality image
-    backgroundColor: null, // Transparent background
-  }).then(canvas => {
-    const link = document.createElement("a");
-    link.download = "AI-Logo.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-
-    // Restore original border-radius
-    preview.style.borderRadius = originalRadius;
-  });
-});
-
-// Ensure CORS is properly applied when fetching images
-async function fetchBackground() {
-  const prompt = prompts[Math.floor(Math.random() * prompts.length)];
-  try {
-    const response = await fetch(`https://api.unsplash.com/photos/random?query=${encodeURIComponent(prompt)}&client_id=${unsplashAccessKey}`);
-    const data = await response.json();
-    previewImage.crossOrigin = "anonymous";
-    return data.urls.regular;
-  } catch (error) {
-    console.error("Error fetching image:", error);
-    alert("Failed to fetch background. Try again later.");
-    return "";
-  }
-}
-
-// Fixed Effects Application (Allowing Combo & Super Effects)
-const applyEffects = (count = 1) => {
-  logoText.classList.remove(...effects);
-  const chosenEffects = [];
-  while (chosenEffects.length < count) {
-    const randomEffect = effects[Math.floor(Math.random() * effects.length)];
-    if (!chosenEffects.includes(randomEffect)) {
-      chosenEffects.push(randomEffect);
-    }
-  }
-  logoText.classList.add(...chosenEffects);
-};
-
-// Handle "Combo" and "Super Effects"
-comboBtn.addEventListener('click', () => {
-  logoText.style.fontFamily = getRandomFont();
-  applyEffects(2); // Apply 2 effects
-});
-
-superBtn.addEventListener('click', () => {
-  logoText.style.fontFamily = getRandomFont();
-  applyEffects(3); // Apply 3 effects
-});
     
-
-
-    // New Code End
+    // "Combo Effects" button: 2 random effects
+    comboBtn.addEventListener('click', () => {
+      logoText.style.fontFamily = getRandomFont();
+      applyEffects(2);
+    });
+    
+    // "Super Effects" button: 3 random effects
+    superBtn.addEventListener('click', () => {
+      logoText.style.fontFamily = getRandomFont();
+      applyEffects(3);
+    });
+    
+    // "Download Logo" button: capture the preview with square corners
+    downloadBtn.addEventListener('click', () => {
+      const preview = document.getElementById("preview");
+      // Temporarily remove border-radius for a square capture
+      const originalRadius = preview.style.borderRadius;
+      preview.style.borderRadius = "0";
+      
+      // Ensure cross-origin image is set
+      previewImage.setAttribute("crossorigin", "anonymous");
+      previewImage.onload = () => {
+        html2canvas(preview, {
+          useCORS: true,
+          allowTaint: true,
+        }).then(canvas => {
+          const link = document.createElement("a");
+          link.download = "AI-Logo.png";
+          link.href = canvas.toDataURL();
+          link.click();
+          // Restore original border-radius
+          preview.style.borderRadius = originalRadius;
+        });
+      };
+      // Reload the image to apply crossorigin settings
+      previewImage.src = previewImage.src;
+    });
     
   </script>
   
 </body>
 
-</html>
+</html
