@@ -132,6 +132,8 @@
       /* Default Neon Glow (overridden by effect classes) */
       text-shadow: 0 0 15px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.5);
     }
+
+    
     
     /* Effects */
     .neon {
@@ -312,6 +314,18 @@
       "Flamenco", "Chakra Petch", "Metal Mania", "Iceberg",
       "Stalinist One", "Dokdo"
     ];
+
+    // Add Sentry
+
+    <script>
+  Sentry.onLoad(function() {
+    Sentry.init({
+        // You can add any additional configuration here
+      });
+  });
+</script>
+
+  
     
     // Global effects array
     const effects = ["neon", "fire", "glitch", "outlineGlow", "rainbowGlow", "shadowPulse", "vintage"];
@@ -426,6 +440,9 @@ function downloadLogo() {
 
 // Attach the download function to your download button
 document.getElementById('downloadBtn').addEventListener('click', downloadLogo);
+
+        // Intentional Error
+        myUndefinedFunction()
     
   </script>
   
