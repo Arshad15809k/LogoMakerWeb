@@ -394,37 +394,47 @@
       applyEffects(3);
     });
     
-async function downloadLogo() {
-  const text = document.getElementById('logoInput').value || 'Your Logo Here';
-  const bgUrl = document.getElementById('previewImage').src;
-  const font = document.getElementById('logoText').style.fontFamily;
-  
-  console.log('Sending Data:', { text, bgUrl, font });
-
-  try {
-    const response = await fetch('/.netlify/functions/downloadLogo', {
+function downloadLogo() {
+  // Capture the preview element as a canvas image.
+  html2canvas(document.getElementById('preview'), { 
+    useCORS: true,
+    scale: 2
+  })
+  .then(canvas => {
+    // Convert the canvas to a data URL
+    const dataUrl = canvas.toDataURL('image/png');
+    
+    // Send the data URL to the Netlify Function
+    return fetch('/.netlify/functions/downloadLogo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, bgUrl, font }),
+      body: JSON.stringify({ dataUrl })
     });
-
-    if (!response.ok) throw new Error(`Error: ${response.status}`);
-
-    const blob = await response.blob();
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Server error: ' + response.status);
+    }
+    return response.blob();
+  })
+  .then(blob => {
+    // Create a temporary link and trigger the download
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'AI-Logo.png';
+    // Append a timestamp to the filename to ensure uniqueness
+    link.download = 'AI-Logo-' + new Date().getTime() + '.png';
     document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
     URL.revokeObjectURL(url);
-  } catch (err) {
-    console.error('Download Error:', err);
+  })
+  .catch(err => {
+    console.error('Download failed:', err);
     alert('Download failed. Check console for details.');
-  }
+  });
 }
 
-// Attach function to the button
 document.getElementById('downloadBtn').addEventListener('click', downloadLogo);
 
 
