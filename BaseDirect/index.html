@@ -256,7 +256,7 @@
 
   <div class="container">
     <div class="header">
-      <h1>Neon Log Maker</h1>
+      <h1>Neon Logo Maker</h1>
       <p>Create stunning AI-generated logos!</p>
     </div>
 
@@ -389,36 +389,45 @@
       applyEffects(3);
     });
     
-downloadBtn.addEventListener('click', () => {
+downloadBtn.addEventListener('click', async () => {
   const preview = document.getElementById("preview");
   
-  // Create a new off-screen clone of the preview element.
+  // Clone the preview to avoid modifying the original.
   const previewClone = preview.cloneNode(true);
-  previewClone.style.borderRadius = "0";  // Remove the border-radius for download.
+  previewClone.style.borderRadius = "0"; // Ensure square corners.
   
-  // Position the clone off-screen so it doesn't affect your layout.
+  // Ensure images are reloaded to bypass caching issues.
+  const img = previewClone.querySelector("img");
+  if (img) {
+    const newImg = new Image();
+    newImg.crossOrigin = "anonymous"; // Ensure CORS is handled.
+    newImg.src = img.src + "?t=" + new Date().getTime(); // Force reload with timestamp.
+    await new Promise((resolve) => {
+      newImg.onload = resolve;
+      newImg.onerror = resolve; // Avoid breaking if image fails to load.
+    });
+    img.parentNode.replaceChild(newImg, img); // Replace with fresh image.
+  }
+  
+  // Append clone offscreen for clean capture.
   previewClone.style.position = "fixed";
   previewClone.style.top = "-9999px";
   previewClone.style.left = "-9999px";
   document.body.appendChild(previewClone);
   
+  // Capture and download the logo.
   html2canvas(previewClone, {
     useCORS: true,
     allowTaint: true,
-  }).then(canvas => {
+  }).then((canvas) => {
     const link = document.createElement("a");
     link.download = "AI-Logo.png";
     link.href = canvas.toDataURL();
     link.click();
-    // Remove the clone after capturing.
-    document.body.removeChild(previewClone);
-  }).catch(err => {
-    console.error("Error capturing the preview:", err);
-    // Remove the clone if an error occurs.
-    document.body.removeChild(previewClone);
+  }).finally(() => {
+    document.body.removeChild(previewClone); // Always clean up.
   });
 });
-
 
     
   </script>
