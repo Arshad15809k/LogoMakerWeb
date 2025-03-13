@@ -389,32 +389,42 @@
       applyEffects(3);
     });
     
-    // "Download Logo" button: capture the preview with square corners
-    downloadBtn.addEventListener('click', () => {
-      const preview = document.getElementById("preview");
-      // Temporarily remove border-radius for a square capture
-      const originalRadius = preview.style.borderRadius;
-      preview.style.borderRadius = "0";
-      
-      // Ensure cross-origin image is set
-      previewImage.setAttribute("crossorigin", "anonymous");
-      previewImage.onload = () => {
-        html2canvas(preview, {
-          useCORS: true,
-          allowTaint: true,
-        }).then(canvas => {
-          const link = document.createElement("a");
-          link.download = "AI-Logo.png";
-          link.href = canvas.toDataURL();
-          link.click();
-          // Restore original border-radius
-          preview.style.borderRadius = originalRadius;
-        });
-      };
-        // Append a timestamp to force a new request
-  const baseUrl = previewImage.src.split('?')[0];
-  previewImage.src = `${baseUrl}?t=${new Date().getTime()}`;
+downloadBtn.addEventListener('click', () => {
+  const preview = document.getElementById("preview");
+  const originalRadius = preview.style.borderRadius;
+  preview.style.borderRadius = "0";
+
+  previewImage.setAttribute("crossorigin", "anonymous");
+
+  // Clear any existing onload handler
+  previewImage.onload = null;
+
+  const runCanvasCapture = () => {
+    html2canvas(preview, {
+      useCORS: true,
+      allowTaint: true,
+    }).then(canvas => {
+      const link = document.createElement("a");
+      link.download = "AI-Logo.png";
+      link.href = canvas.toDataURL();
+      link.click();
+      preview.style.borderRadius = originalRadius;
+    });
+  };
+
+  // If the image is already loaded, capture immediately.
+  if (previewImage.complete && previewImage.naturalHeight !== 0) {
+    runCanvasCapture();
+  } else {
+    // Otherwise, wait until the image loads.
+    previewImage.onload = () => {
+      runCanvasCapture();
+      // Clear the onload to avoid duplicate calls.
+      previewImage.onload = null;
+    };
+  }
 });
+
     
   </script>
   
