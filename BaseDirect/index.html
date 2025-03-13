@@ -394,19 +394,27 @@ function downloadLogo() {
   const preview = document.getElementById('preview');
   const previewImage = document.getElementById('previewImage');
 
-  // Force reload image by appending a cache-busting query
+  // Ensure image reloads by adding a cache-busting query
   const newImageSrc = previewImage.src.split('?')[0] + '?' + new Date().getTime();
   previewImage.src = newImageSrc;
 
-  // Ensure image is fully loaded before capturing
+  // Wait for the image to reload
   previewImage.onload = () => {
     html2canvas(preview, { useCORS: true }).then((canvas) => {
+      // Create a download link and trigger download
       const link = document.createElement('a');
-      link.download = 'AI-Logo1.png';
+      link.download = 'AI-Logo.png';
       link.href = canvas.toDataURL('image/png');
       link.click();
+
+      // Clean up the canvas after download to reset everything
+      canvas.remove();
     });
   };
+
+  // Force a reset of the image to avoid cached content
+  previewImage.removeAttribute('crossorigin');
+  previewImage.setAttribute('crossorigin', 'anonymous');
 }
 
 // Attach event listener
