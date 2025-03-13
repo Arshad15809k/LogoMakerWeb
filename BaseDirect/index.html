@@ -389,52 +389,21 @@
       applyEffects(3);
     });
     
-downloadBtn.addEventListener('click', async () => {
-  const preview = document.getElementById("preview");
+// Download Function
+function downloadLogo() {
+  const preview = document.getElementById('preview');
 
-  // Clone the preview to work on a clean version
-  const previewClone = preview.cloneNode(true);
-  previewClone.style.borderRadius = "0";
-
-  // Handle image reload + cache bypass
-  const img = previewClone.querySelector("img");
-  if (img) {
-    const newImg = new Image();
-    newImg.crossOrigin = "anonymous";
-    newImg.src = `${img.src}?t=${Date.now()}`; // Cache-busting
-    await new Promise((resolve, reject) => {
-      newImg.onload = resolve;
-      newImg.onerror = reject;
-    });
-    img.replaceWith(newImg);
-  }
-
-  // Temporarily add the clone to capture it
-  document.body.appendChild(previewClone);
-  previewClone.style.position = "fixed";
-  previewClone.style.top = "-9999px";
-
-  try {
-    const canvas = await html2canvas(previewClone, {
-      useCORS: true,
-      allowTaint: true,
-      logging: true, // For debugging in console
-      scale: 2, // High-res output
-      backgroundColor: null, // Preserve transparency if any
-    });
-
-    const link = document.createElement("a");
-    link.download = `AI-Logo-${Date.now()}.png`;
-    link.href = canvas.toDataURL("image/png");
+  html2canvas(preview, { useCORS: true }).then((canvas) => {
+    const link = document.createElement('a');
+    link.download = 'AI-Logo.png';
+    link.href = canvas.toDataURL('image/png');
     link.click();
-  } catch (error) {
-    console.error("🔥 Mission Failed:", error);
-  } finally {
-    // Clean up after the mission
-    document.body.removeChild(previewClone);
-  }
-});
+  });
+}
 
+// Call this function when the download button is clicked
+document.getElementById('downloadBtn').addEventListener('click', downloadLogo);
+                                 
     
   </script>
   
