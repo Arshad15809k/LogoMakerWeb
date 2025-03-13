@@ -395,32 +395,37 @@
     });
     
 async function downloadLogo() {
-  const text = logoInput.value || 'Your Logo Here';
-  const bgUrl = previewImage.src;
-  const font = logoText.style.fontFamily;
+  const text = document.getElementById('logoInput').value || 'Your Logo Here';
+  const bgUrl = document.getElementById('previewImage').src;
+  const font = document.getElementById('logoText').style.fontFamily;
+  
+  console.log('Sending Data:', { text, bgUrl, font });
 
   try {
     const response = await fetch('/.netlify/functions/downloadLogo', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, bgUrl, font }),
     });
 
-    if (!response.ok) throw new Error('Failed to download logo');
+    if (!response.ok) throw new Error(`Error: ${response.status}`);
 
     const blob = await response.blob();
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'AI-Log9q.png';
+    link.download = 'AI-Logo.png';
     document.body.appendChild(link);
     link.click();
     URL.revokeObjectURL(url);
   } catch (err) {
     console.error('Download Error:', err);
+    alert('Download failed. Check console for details.');
   }
 }
 
-downloadBtn.addEventListener('click', downloadLogo);
+// Attach function to the button
+document.getElementById('downloadBtn').addEventListener('click', downloadLogo);
 
 
   
