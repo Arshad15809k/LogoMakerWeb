@@ -256,7 +256,7 @@
 
   <div class="container">
     <div class="header">
-      <h1>Logo Maker</h1>
+      <h1>Neon Logo Maker</h1>
       <p>Create stunning AI-generated logos!</p>
     </div>
 
@@ -392,16 +392,16 @@
 downloadBtn.addEventListener('click', async () => {
   const preview = document.getElementById("preview");
 
-  // Clone the preview for a clean capture
+  // Clone the preview to work on a clean version
   const previewClone = preview.cloneNode(true);
   previewClone.style.borderRadius = "0";
 
-  // Force fresh image loading to avoid cache issues
+  // Handle image reload + cache bypass
   const img = previewClone.querySelector("img");
   if (img) {
     const newImg = new Image();
     newImg.crossOrigin = "anonymous";
-    newImg.src = img.src.split("?")[0] + "?t=" + new Date().getTime(); // Bypass cache
+    newImg.src = `${img.src}?t=${Date.now()}`; // Cache-busting
     await new Promise((resolve, reject) => {
       newImg.onload = resolve;
       newImg.onerror = reject;
@@ -409,27 +409,28 @@ downloadBtn.addEventListener('click', async () => {
     img.replaceWith(newImg);
   }
 
-  // Append clone offscreen
+  // Temporarily add the clone to capture it
   document.body.appendChild(previewClone);
   previewClone.style.position = "fixed";
   previewClone.style.top = "-9999px";
 
   try {
-    // Capture the cloned preview
     const canvas = await html2canvas(previewClone, {
       useCORS: true,
       allowTaint: true,
+      logging: true, // For debugging in console
+      scale: 2, // High-res output
+      backgroundColor: null, // Preserve transparency if any
     });
 
-    // Trigger the download
     const link = document.createElement("a");
     link.download = `AI-Logo-${Date.now()}.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
   } catch (error) {
-    console.error("Download error:", error);
+    console.error("🔥 Mission Failed:", error);
   } finally {
-    // Cleanup: Remove the clone from the DOM
+    // Clean up after the mission
     document.body.removeChild(previewClone);
   }
 });
