@@ -256,7 +256,7 @@
 
   <div class="container">
     <div class="header">
-      <h1>Neon Logo Maker</h1>
+      <h1>Logo Maker</h1>
       <p>Create stunning AI-generated logos!</p>
     </div>
 
@@ -391,42 +391,47 @@
     
 downloadBtn.addEventListener('click', async () => {
   const preview = document.getElementById("preview");
-  
-  // Clone the preview to avoid modifying the original.
+
+  // Clone the preview for a clean capture
   const previewClone = preview.cloneNode(true);
-  previewClone.style.borderRadius = "0"; // Ensure square corners.
-  
-  // Ensure images are reloaded to bypass caching issues.
+  previewClone.style.borderRadius = "0";
+
+  // Force fresh image loading to avoid cache issues
   const img = previewClone.querySelector("img");
   if (img) {
     const newImg = new Image();
-    newImg.crossOrigin = "anonymous"; // Ensure CORS is handled.
-    newImg.src = img.src + "?t=" + new Date().getTime(); // Force reload with timestamp.
-    await new Promise((resolve) => {
+    newImg.crossOrigin = "anonymous";
+    newImg.src = img.src.split("?")[0] + "?t=" + new Date().getTime(); // Bypass cache
+    await new Promise((resolve, reject) => {
       newImg.onload = resolve;
-      newImg.onerror = resolve; // Avoid breaking if image fails to load.
+      newImg.onerror = reject;
     });
-    img.parentNode.replaceChild(newImg, img); // Replace with fresh image.
+    img.replaceWith(newImg);
   }
-  
-  // Append clone offscreen for clean capture.
+
+  // Append clone offscreen
+  document.body.appendChild(previewClone);
   previewClone.style.position = "fixed";
   previewClone.style.top = "-9999px";
-  previewClone.style.left = "-9999px";
-  document.body.appendChild(previewClone);
-  
-  // Capture and download the logo.
-  html2canvas(previewClone, {
-    useCORS: true,
-    allowTaint: true,
-  }).then((canvas) => {
+
+  try {
+    // Capture the cloned preview
+    const canvas = await html2canvas(previewClone, {
+      useCORS: true,
+      allowTaint: true,
+    });
+
+    // Trigger the download
     const link = document.createElement("a");
-    link.download = "AI-Logo.png";
-    link.href = canvas.toDataURL();
+    link.download = `AI-Logo-${Date.now()}.png`;
+    link.href = canvas.toDataURL("image/png");
     link.click();
-  }).finally(() => {
-    document.body.removeChild(previewClone); // Always clean up.
-  });
+  } catch (error) {
+    console.error("Download error:", error);
+  } finally {
+    // Cleanup: Remove the clone from the DOM
+    document.body.removeChild(previewClone);
+  }
 });
 
     
