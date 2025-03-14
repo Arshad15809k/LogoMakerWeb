@@ -397,47 +397,65 @@
       logoText.style.fontFamily = getRandomFont();
       applyEffects(3);
     });
-    
-let downloadCount = 0; // Track downloads
+let downloadCount = 0; // Track how many times the download happens
 
 downloadBtn.addEventListener('click', async () => {
   const preview = document.querySelector("#preview");
   const downloadWarning = document.getElementById('downloadWarning');
 
-  // Remove border-radius for square corners
+  // Ensure square corners for the downloaded image
   preview.style.borderRadius = "0";
 
-  // Clone the preview element
+  // Clone the preview to capture a clean snapshot
   const clonePreview = preview.cloneNode(true);
   document.body.appendChild(clonePreview);
 
-  const img = clonePreview.querySelector("img");
-  img.setAttribute("crossorigin", "anonymous");
-  img.src = previewImage.src;
+  // Ensure image loads cross-origin (for Unsplash images)
+  const cloneImg = clonePreview.querySelector("img");
+  cloneImg.setAttribute("crossorigin", "anonymous");
+  cloneImg.src = previewImage.src;
 
-  img.onload = () => {
-    html2canvas(clonePreview, {
-      useCORS: true,
-      allowTaint: true,
-    }).then((canvas) => {
+  // Ensure the text matches the live preview
+  const originalText = preview.querySelector("#logoText");
+  const cloneText = clonePreview.querySelector("#logoText");
+
+  // Apply computed styles to fix dynamic size
+  const computedStyles = window.getComputedStyle(originalText);
+  cloneText.style.fontSize = computedStyles.fontSize;
+  cloneText.style.textShadow = computedStyles.textShadow;
+  cloneText.style.fontFamily = computedStyles.fontFamily;
+
+  cloneImg.onload = async () => {
+    try {
+      const canvas = await html2canvas(clonePreview, {
+        useCORS: true,
+        allowTaint: true,
+      });
+
+      // Generate a random number to append to filename (between 1000 - 9999)
+      const randomNum = Math.floor(1000 + Math.random() * 9000);
+
+      // Trigger the download with unique filename
       const link = document.createElement("a");
-      link.download = "AI-Logo.png";
+      link.download = `AI-Logo-${randomNum}.png`;
       link.href = canvas.toDataURL();
       link.click();
 
-      // Clean up and restore border-radius
+      // Cleanup: Restore original preview and remove clone
       document.body.removeChild(clonePreview);
       preview.style.borderRadius = "15px";
 
-      // Always show the notice after the first download (formality)
-      if (downloadCount >= 1) {
+      // Show the notice only after the first download
+      if (downloadCount === 0) {
         downloadWarning.style.display = 'block';
       }
-      downloadCount++; // Increase download count
-    });
+      downloadCount++; // Increment the download count
+    } catch (error) {
+      console.error("Download failed:", error);
+      alert("Oops! Something went wrong while downloading.");
+    }
   };
 });
-
 
 
 
