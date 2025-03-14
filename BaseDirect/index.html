@@ -397,62 +397,29 @@
       logoText.style.fontFamily = getRandomFont();
       applyEffects(3);
     });
-let downloadCount = 0;
-
+// Updated Download Logic (Captures Full Canvas with Background)
 downloadBtn.addEventListener('click', async () => {
   const preview = document.querySelector("#preview");
-  const downloadWarning = document.getElementById('downloadWarning');
 
-  // Ensure square corners for download
-  preview.style.borderRadius = "0";
+  // Ensure image loads with cross-origin for capturing external images
+  previewImage.setAttribute("crossorigin", "anonymous");
 
-  // Clone the preview for an accurate snapshot
-  const clonePreview = preview.cloneNode(true);
-  document.body.appendChild(clonePreview);
-
-  // Ensure image loads with CORS permissions
-  const cloneImg = clonePreview.querySelector("img");
-  cloneImg.setAttribute("crossorigin", "anonymous");
-  cloneImg.src = previewImage.src;
-
-  // Match all dynamic styles (font, effects, shadow) from original to clone
-  const originalText = preview.querySelector("#logoText");
-  const cloneText = clonePreview.querySelector("#logoText");
-
-  const computedStyles = window.getComputedStyle(originalText);
-  cloneText.style.cssText = computedStyles.cssText;
-
-  // Capture high-quality snapshot
-  cloneImg.onload = async () => {
-    try {
-      const canvas = await html2canvas(clonePreview, {
-        useCORS: true,
-        allowTaint: true,
-        scale: 2, // Higher scale for better resolution
-      });
-
-      // Unique filename using a random number
-      const randomNum = Math.floor(1000 + Math.random() * 9000);
+  // Wait until the image is fully loaded before capturing
+  previewImage.onload = () => {
+    html2canvas(preview, {
+      useCORS: true, // Capture external images
+      allowTaint: true, // Allow images from other origins
+      scale: 2, // High resolution for better quality
+    }).then((canvas) => {
       const link = document.createElement("a");
-      link.download = `AI-Logo-${randomNum}.png`;
+      link.download = "AI-Logo.png";
       link.href = canvas.toDataURL("image/png");
       link.click();
-
-      // Clean up and restore round corners
-      document.body.removeChild(clonePreview);
-      preview.style.borderRadius = "15px";
-
-      // Display warning on the first download
-      if (downloadCount === 0) {
-        downloadWarning.style.display = 'block';
-      }
-      downloadCount++;
-
-    } catch (error) {
-      console.error("Error during download:", error);
-      alert("Something went wrong while downloading.");
-    }
+    });
   };
+
+  // Force image reload to capture with CORS enabled
+  previewImage.src = previewImage.src;
 });
 
 
