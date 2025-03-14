@@ -423,7 +423,7 @@
       logoText.style.fontFamily = getRandomFont();
       applyEffects(3);
     });
-// Updated Download Logic: Captures Full Canvas with Square Corners
+// Updated Download Logic: Capture Cropped Background with Random Number Filename
 downloadBtn.addEventListener('click', async () => {
   const preview = document.querySelector("#preview");
 
@@ -431,21 +431,27 @@ downloadBtn.addEventListener('click', async () => {
   const originalBorderRadius = preview.style.borderRadius;
   preview.style.borderRadius = "0";
 
-  // Ensure image loads with cross-origin for capturing external images
+  // Ensure image loads with cross-origin
   previewImage.setAttribute("crossorigin", "anonymous");
 
+  // Generate a random number between 1000 and 9999
+  const randomNumber = Math.floor(1000 + Math.random() * 9000);
+
+  // Wait for the image to load before capturing
   previewImage.onload = () => {
     html2canvas(preview, {
-      useCORS: true, // Capture external images
-      allowTaint: true, // Allow cross-origin images
+      useCORS: true,
+      allowTaint: true,
       scale: 2, // High-quality output
+      width: preview.clientWidth,
+      height: preview.clientHeight,
     }).then((canvas) => {
       const link = document.createElement("a");
-      link.download = "AI-Logo.png";
+      link.download = `AI-Logo-${randomNumber}.png`; // Filename with random number
       link.href = canvas.toDataURL("image/png");
       link.click();
 
-      // Restore the original border-radius after download
+      // Restore original border-radius after download
       preview.style.borderRadius = originalBorderRadius;
     });
   };
@@ -453,6 +459,7 @@ downloadBtn.addEventListener('click', async () => {
   // Force image reload to capture with CORS
   previewImage.src = previewImage.src;
 });
+
 
 
 
