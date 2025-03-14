@@ -397,30 +397,37 @@
       logoText.style.fontFamily = getRandomFont();
       applyEffects(3);
     });
-// Updated Download Logic (Captures Full Canvas with Background)
+// Updated Download Logic: Captures Full Canvas with Square Corners
 downloadBtn.addEventListener('click', async () => {
   const preview = document.querySelector("#preview");
+
+  // Temporarily remove border-radius for square corners
+  const originalBorderRadius = preview.style.borderRadius;
+  preview.style.borderRadius = "0";
 
   // Ensure image loads with cross-origin for capturing external images
   previewImage.setAttribute("crossorigin", "anonymous");
 
-  // Wait until the image is fully loaded before capturing
   previewImage.onload = () => {
     html2canvas(preview, {
       useCORS: true, // Capture external images
-      allowTaint: true, // Allow images from other origins
-      scale: 2, // High resolution for better quality
+      allowTaint: true, // Allow cross-origin images
+      scale: 2, // High-quality output
     }).then((canvas) => {
       const link = document.createElement("a");
       link.download = "AI-Logo.png";
       link.href = canvas.toDataURL("image/png");
       link.click();
+
+      // Restore the original border-radius after download
+      preview.style.borderRadius = originalBorderRadius;
     });
   };
 
-  // Force image reload to capture with CORS enabled
+  // Force image reload to capture with CORS
   previewImage.src = previewImage.src;
 });
+
 
 
 
