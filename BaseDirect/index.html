@@ -394,48 +394,42 @@
       applyEffects(3);
     });
     
-function downloadLogo() {
-  // Capture the preview element as a canvas image.
-  html2canvas(document.getElementById('preview'), { 
-    useCORS: true,
-    scale: 2
-  })
-  .then(canvas => {
-    // Convert the canvas to a data URL
-    const dataUrl = canvas.toDataURL('image/png');
-    
-    // Send the data URL to the Netlify Function
-    return fetch('/.netlify/functions/downloadLogo', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ dataUrl })
-    });
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Server error: ' + response.status);
-    }
-    return response.blob();
-  })
-  .then(blob => {
-    // Create a temporary link and trigger the download
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    // Append a timestamp to the filename to ensure uniqueness
-    link.download = 'AI-Logo-' + new Date().getTime() + '.png';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  })
-  .catch(err => {
-    console.error('Download failed:', err);
-    alert('Download failed. Check console for details.');
-  });
-}
+downloadBtn.addEventListener('click', () => {
+  const preview = document.getElementById("preview");
+  const originalRadius = preview.style.borderRadius;
+  preview.style.borderRadius = "0";
 
-document.getElementById('downloadBtn').addEventListener('click', downloadLogo);
+  previewImage.setAttribute("crossorigin", "anonymous");
+
+  // Clear any existing onload handler
+  previewImage.onload = null;
+
+  const runCanvasCapture = () => {
+    html2canvas(preview, {
+      useCORS: true,
+      allowTaint: true,
+    }).then(canvas => {
+      const link = document.createElement("a");
+      link.download = "AI-Logo.png";
+      link.href = canvas.toDataURL();
+      link.click();
+      preview.style.borderRadius = originalRadius;
+    });
+  };
+
+  // If the image is already loaded, capture immediately.
+  if (previewImage.complete && previewImage.naturalHeight !== 0) {
+    runCanvasCapture();
+  } else {
+    // Otherwise, wait until the image loads.
+    previewImage.onload = () => {
+      runCanvasCapture();
+      // Clear the onload to avoid duplicate calls.
+      previewImage.onload = null;
+    };
+  }
+});
+
 
 
   
