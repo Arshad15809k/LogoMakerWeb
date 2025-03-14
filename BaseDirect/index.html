@@ -397,62 +397,60 @@
       logoText.style.fontFamily = getRandomFont();
       applyEffects(3);
     });
-let downloadCount = 0; // Track how many times the download happens
+let downloadCount = 0;
 
 downloadBtn.addEventListener('click', async () => {
   const preview = document.querySelector("#preview");
   const downloadWarning = document.getElementById('downloadWarning');
 
-  // Ensure square corners for the downloaded image
+  // Ensure square corners for download
   preview.style.borderRadius = "0";
 
-  // Clone the preview to capture a clean snapshot
+  // Clone the preview for an accurate snapshot
   const clonePreview = preview.cloneNode(true);
   document.body.appendChild(clonePreview);
 
-  // Ensure image loads cross-origin (for Unsplash images)
+  // Ensure image loads with CORS permissions
   const cloneImg = clonePreview.querySelector("img");
   cloneImg.setAttribute("crossorigin", "anonymous");
   cloneImg.src = previewImage.src;
 
-  // Ensure the text matches the live preview
+  // Match all dynamic styles (font, effects, shadow) from original to clone
   const originalText = preview.querySelector("#logoText");
   const cloneText = clonePreview.querySelector("#logoText");
 
-  // Apply computed styles to fix dynamic size
   const computedStyles = window.getComputedStyle(originalText);
-  cloneText.style.fontSize = computedStyles.fontSize;
-  cloneText.style.textShadow = computedStyles.textShadow;
-  cloneText.style.fontFamily = computedStyles.fontFamily;
+  cloneText.style.cssText = computedStyles.cssText;
 
+  // Capture high-quality snapshot
   cloneImg.onload = async () => {
     try {
       const canvas = await html2canvas(clonePreview, {
         useCORS: true,
         allowTaint: true,
+        scale: 2, // Higher scale for better resolution
       });
 
-      // Generate a random number to append to filename (between 1000 - 9999)
+      // Unique filename using a random number
       const randomNum = Math.floor(1000 + Math.random() * 9000);
-
-      // Trigger the download with unique filename
       const link = document.createElement("a");
       link.download = `AI-Logo-${randomNum}.png`;
-      link.href = canvas.toDataURL();
+      link.href = canvas.toDataURL("image/png");
       link.click();
 
-      // Cleanup: Restore original preview and remove clone
+      // Clean up and restore round corners
       document.body.removeChild(clonePreview);
       preview.style.borderRadius = "15px";
 
-      // Show the notice only after the first download
+      // Display warning on the first download
       if (downloadCount === 0) {
         downloadWarning.style.display = 'block';
       }
-      downloadCount++; // Increment the download count
+      downloadCount++;
+
     } catch (error) {
-      console.error("Download failed:", error);
-      alert("Oops! Something went wrong while downloading.");
+      console.error("Error during download:", error);
+      alert("Something went wrong while downloading.");
     }
   };
 });
