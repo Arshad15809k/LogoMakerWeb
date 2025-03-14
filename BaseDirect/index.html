@@ -132,6 +132,31 @@
     
     
     /* Effects */
+
+.notice {
+  margin: 20px 0;
+  padding: 12px;
+  border-radius: 10px;
+  background: #FFD700; /* Yellow Background */
+  color: #333; /* Dark Text for Contrast */
+  font-weight: bold;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); /* Glow Effect */
+  animation: pulse 1.5s infinite alternate; /* Subtle Animation */
+}
+
+/* Gentle Pulsating Animation */
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.03);
+  }
+}
+    
+
+    
     .neon {
       text-shadow:
         0 0 25px rgba(0, 255, 255, 0.9),
@@ -278,9 +303,10 @@
     <button id="comboBtn">Combo Effects (2)</button>
     <button id="superBtn">Super Effects (3)</button>
     <button id="downloadBtn">Download Logo</button>
-    <p id="downloadWarning" style="text-align: center; margin-top: 10px; display: none; color: #ff4747;">
-   ⚠️ If you face issues downloading multiple times, check your browser settings!
-    </p>
+    <div class="notice">
+  ⚠️ **Agar Download Nahi Ho Rha To Site Setting Mein Jaake "Automatic Downloads" On Kar Dijiye.**
+</div>
+
     
     <div class="footer">
       <p>Made with ❤️ by Arshad & ChatGPT – Because a berozgar aspirant has no limits.</p>
