@@ -299,6 +299,10 @@
     const comboBtn = document.getElementById('comboBtn');
     const superBtn = document.getElementById('superBtn');
     const downloadBtn = document.getElementById('downloadBtn');
+    <p id="downloadWarning" style="text-align: center; margin-top: 10px; display: none; color: #ff4747;">
+   ⚠️ If you face issues downloading multiple times, check your browser settings!
+</p>
+    
     
     // Arrays for Fonts & Effects
     const fonts = [
@@ -394,41 +398,46 @@
       applyEffects(3);
     });
     
-downloadBtn.addEventListener('click', () => {
-  const preview = document.getElementById("preview");
-  const originalRadius = preview.style.borderRadius;
+let downloadCount = 0; // Track downloads
+
+downloadBtn.addEventListener('click', async () => {
+  const preview = document.querySelector("#preview");
+  const downloadWarning = document.getElementById('downloadWarning');
+
+  // Remove border-radius for square corners
   preview.style.borderRadius = "0";
 
-  previewImage.setAttribute("crossorigin", "anonymous");
+  // Clone the preview element
+  const clonePreview = preview.cloneNode(true);
+  document.body.appendChild(clonePreview);
 
-  // Clear any existing onload handler
-  previewImage.onload = null;
+  const img = clonePreview.querySelector("img");
+  img.setAttribute("crossorigin", "anonymous");
+  img.src = previewImage.src;
 
-  const runCanvasCapture = () => {
-    html2canvas(preview, {
+  img.onload = () => {
+    html2canvas(clonePreview, {
       useCORS: true,
       allowTaint: true,
-    }).then(canvas => {
+    }).then((canvas) => {
       const link = document.createElement("a");
       link.download = "AI-Logo.png";
       link.href = canvas.toDataURL();
       link.click();
-      preview.style.borderRadius = originalRadius;
+
+      // Clean up and restore border-radius
+      document.body.removeChild(clonePreview);
+      preview.style.borderRadius = "15px";
+
+      // Always show the notice after the first download (formality)
+      if (downloadCount >= 1) {
+        downloadWarning.style.display = 'block';
+      }
+      downloadCount++; // Increase download count
     });
   };
-
-  // If the image is already loaded, capture immediately.
-  if (previewImage.complete && previewImage.naturalHeight !== 0) {
-    runCanvasCapture();
-  } else {
-    // Otherwise, wait until the image loads.
-    previewImage.onload = () => {
-      runCanvasCapture();
-      // Clear the onload to avoid duplicate calls.
-      previewImage.onload = null;
-    };
-  }
 });
+
 
 
 
